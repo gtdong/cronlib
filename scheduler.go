@@ -255,10 +255,18 @@ func (c *CronSchduler) GetServiceCron(srv string) (*JobModel, error) {
 	return oldModel, nil
 }
 
-func (c *CronSchduler) ListServiceCron() ([]*JobModel, error) {
-	var tasks []*JobModel
+func (c *CronSchduler) ListServiceCron() ([]JobModelRes, error) {
+	var tasks []JobModelRes
 	for _, v := range c.tasks {
-		tasks = append(tasks, v)
+		tasks = append(tasks, JobModelRes{
+			Spec:     v.spec,
+			Srv:      v.srv,
+			TryCatch: v.tryCatch,
+			Async:    v.async,
+			Exited:   v.exited,
+			Running:  v.running,
+			Do:       v.do,
+		})
 	}
 	return tasks, nil
 }
@@ -334,6 +342,28 @@ type JobModel struct {
 	exited bool
 
 	sync.RWMutex
+}
+
+type JobModelRes struct {
+	// srv name
+	Srv string `json:"srv"`
+
+	// callfunc
+	Do func() `json:"do"`
+
+	// if async = true; go func() { do() }
+	Async bool `json:"async"`
+
+	// try catch panic
+	TryCatch bool `json:"try_catch"`
+
+	// cron spec
+	Spec string `json:"spec"`
+
+	// break for { ... } loop
+	Running bool `json:"running"`
+	// ensure job worker is exited already
+	Exited bool `json:"exited"`
 }
 
 func (j *JobModel) SetTryCatch(b bool) {
