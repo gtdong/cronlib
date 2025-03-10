@@ -255,6 +255,14 @@ func (c *CronSchduler) GetServiceCron(srv string) (*JobModel, error) {
 	return oldModel, nil
 }
 
+func (c *CronSchduler) ListServiceCron() ([]*JobModel, error) {
+	var tasks []*JobModel
+	for _, v := range c.tasks {
+		tasks = append(tasks, v)
+	}
+	return tasks, nil
+}
+
 // NewJobModel - defualt block sync callfunc
 func NewJobModel(spec string, f func(), options ...JobOption) (*JobModel, error) {
 	var err error
