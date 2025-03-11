@@ -265,7 +265,6 @@ func (c *CronSchduler) ListServiceCron() ([]JobModelRes, error) {
 			Async:    v.async,
 			Exited:   v.exited,
 			Running:  v.running,
-			Do:       v.do,
 		})
 	}
 	return tasks, nil
@@ -347,9 +346,6 @@ type JobModel struct {
 type JobModelRes struct {
 	// srv name
 	Srv string `json:"srv"`
-
-	// callfunc
-	Do func() `json:"do"`
 
 	// if async = true; go func() { do() }
 	Async bool `json:"async"`
